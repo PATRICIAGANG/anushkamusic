@@ -30,7 +30,7 @@ async def redio_v(url: str):
     """
     yt_ = YouTube(url)
     # yt = YoutubeDL({"format": "bestaudio"})
-    yt = YoutubeDL({"format": "bestvideo[height<=480]+bestaudio[ext=m4a]"})
+    yt = YoutubeDL({"format": "bestvideo[height<=480]+bestaudio"})# [ext=m4a]
     x = yt.extract_info(yt_.watch_url, download=False)
     rtype = x['requested_formats']
     return rtype[0]['url'], rtype[1]['url'], yt_.title
