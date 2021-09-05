@@ -174,9 +174,9 @@ async def switch(event):
         
 
         try:
-            # video, audio, title = await redio_v(url)
-            audio = True
-            video, title = await download(url)
+            video, audio, title = await redio_v(url)
+            # audio = True
+            # video, title = await download(url)
         except TypeError as e:
             await temp.edit(f"Failed: {e}")
             return
@@ -191,9 +191,9 @@ async def switch(event):
             return
         else:
             try:
-                # await groupcall.start_audio(audio)
-                # await groupcall.start_video(video, with_audio=False)
-                await groupcall.start_video(video, with_audio=True)
+                await groupcall.start_audio(audio)
+                await groupcall.start_video(video, with_audio=False)
+                # await groupcall.start_video(video, with_audio=True)
             except RuntimeError as e:
                 await temp.edit(f"{e}")
                 return
@@ -226,9 +226,9 @@ async def play(event):
     temp = await event.respond("Starting...")
     if url:
         try:
-            # video, audio, title = await redio_v(url)
-            audio = True
-            video, title = await download(url)
+            video, audio, title = await redio_v(url)
+            # audio = True
+            # video, title = await download(url)
         except TypeError as e:
             await temp.edit(f"Failed: {e}")
             return
@@ -243,9 +243,9 @@ async def play(event):
             return
         else:
             try:
-                # await groupcall.start_audio(audio)
-                # await groupcall.start_video(video, with_audio=False)
-                await groupcall.start_video(video, with_audio=True)
+                await groupcall.start_audio(audio)
+                await groupcall.start_video(video, with_audio=False)
+                # await groupcall.start_video(video, with_audio=True)
             except RuntimeError as e:
                 await temp.edit(f"{e}")
                 return
