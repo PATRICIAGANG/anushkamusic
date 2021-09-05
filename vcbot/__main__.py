@@ -118,9 +118,9 @@ async def stop(event):
         await event.edit("stopped")
  
  
-@bot.on(events.CallbackQuery(pattern="Next|Any"))
+@bot.on(events.CallbackQuery(chats=VAR.ADMINS, pattern="Next|Any"))
 @bot.on(events.NewMessage(from_users=VAR.ADMINS, pattern="/next|/any"))
-@admin
+# @admin
 # @stopifstarted
 async def switch(event):
     
