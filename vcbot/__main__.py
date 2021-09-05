@@ -1,5 +1,6 @@
 
 import asyncio
+from asyncio.locks import Event
 import traceback
 import logging
 import random
@@ -46,10 +47,12 @@ factory = GroupCallFactory(user, GroupCallFactory.MTPROTO_CLIENT_TYPE.TELETHON)
 class Factory:
     def __init__(self) -> None:
         self.groupcall = factory.get_group_call()
+        self.is_running = False
         
 
     async def stop(self):
         await self.groupcall.stop()
+        self.is_running = False
 
     @property 
     def is_connected(self):
@@ -65,9 +68,25 @@ class Factory:
     async def start_video(self, input_, repeat=False, with_audio=True):
         if self.is_connected:
             await self.groupcall.start_video(input_ ,repeat=repeat, with_audio=with_audio)
+            self.is_running = True
     async def start_audio(self, input_, repeat=False):
         if self.is_connected:
-            await self.groupcall.start_audio(input_ ,repeat=repeat)     
+            await self.groupcall.start_audio(input_ ,repeat=repeat)
+            self.is_running = True
+    
+    async def play_pause(self, play=False):
+        if self.is_connected:
+            if play:
+                await self.groupcall.resume_playout()
+            else:
+                await self.groupcall.pause_playout()
+    
+    async def restart(self):
+        if self.is_connected:
+            await self.groupcall.restart_playout()
+
+
+
 
 
 
@@ -113,15 +132,7 @@ async def start(event):
 async def uptime(e):
     await e.respond(f"Uptime: {perf_counter()/1e-9}")
 
-@bot.on(events.CallbackQuery(pattern="Stop"))
-@bot.on(events.NewMessage(from_users=VAR.ADMINS, pattern="/stop"))
-@admin
-async def stop(event):
-    await groupcall.stop()
-    if not hasattr(event, 'data'):
-        await event.respond("stopped")
-    else:
-        await event.edit("stopped")
+
  
  
 @bot.on(events.CallbackQuery(pattern="Next|Any"))
@@ -261,4 +272,44 @@ async def add_lst(event):
     for i in result:
         total = generator.add(i)
     await event.reply(f"Added: Total: {total}")
+
+@bot.on(events.CallbackQuery(pattern="Start|Join|Resume|Pause|Restart|Stop"))
+@bot.on(events.NewMessage(from_users=VAR.ADMINS, pattern=".start|.join|.resume|.pause|.restart|.stop"))
+@admin
+async def etc(event):
+    buttons = [
+        [Button.inline("Next"), Button.inline("Any")],
+        [Button.inline("Resume")],
+        [Button.inline("Pause")],
+        [Button.inline("Restart")],
+        [Button.inline("Stop")]
+        ]
+    if hasattr(event, 'data'):
+        case = event.data.decode('utf-8').lower()
+        temp = await event.edit("...")
+    else:
+        case = event.raw_text.lower()[1:]
+        temp = await event.respond("...")
+    if case == 'start|join':
+        await groupcall.start()
+    elif case == 'stop':
+        await groupcall.stop()
+    elif case == 'resume':
+        await groupcall.play_pause(True)
+    elif case == 'pause':
+        await groupcall.play_pause()
+    elif case == 'restart':
+        await groupcall.restart()
+    await temp.edit(f"Successfully {case}ed ",
+        button=buttons
+    
+    )
+    
+        
+    
+    
+
+
+
+
 user.run_until_disconnected()
