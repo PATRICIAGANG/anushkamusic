@@ -13,7 +13,7 @@ async def cmd_dl(yt, url):
     url_ = yt.video_id
     url = "https://www.youtube.com/watch?v=" + url_
     logging.info("starting yt-dl")
-    x = await cmd(f'youtube-dl -f "best[height<=480]" "{url}" -o "{url_}.%(ext)s" --no-continue') #
+    x = await cmd(f'youtube-dl -f "best[height==480]/best[height<=480]" "{url}" -o "{url_}.%(ext)s" --no-continue') #
     if not x:
         return
     logging.info("stopped yt-dl")
@@ -32,7 +32,7 @@ async def redio_v(url: str):
     """
     yt_ = YouTube(url)
     # yt = YoutubeDL({"format": "bestaudio"})
-    yt = YoutubeDL({"format": "bestvideo[height<=720]+bestaudio"})# [ext=m4a]
+    yt = YoutubeDL({"format": "best[height<=480]"})# [ext=m4a]
     x = yt.extract_info(yt_.watch_url, download=False)
     rtype = x['requested_formats']
     return rtype[0]['url'], rtype[1]['url'], yt_.title
