@@ -161,7 +161,8 @@ async def switch(event):
             url = generator.any()
     if url:
         await groupcall.start(event.chat_id)
-        await asyncio.sleep(1)
+        await groupcall.start(event.chat_id)
+        await asyncio.sleep(2)
         
 
         try:
@@ -179,10 +180,9 @@ async def switch(event):
             await temp.edit("can't decode")
             return
         else:
-            task1 = groupcall.start_audio(audio)
-            task2 = groupcall.start_video(video, with_audio=False)
-            await task1
-            await task2
+            await groupcall.start_audio(audio)
+            await groupcall.start_video(video, with_audio=False)
+         
             # await asyncio.gather(task1, task2)
             await temp.edit(f"**Currently Playing**: [{title}]({url})",
             buttons = [
