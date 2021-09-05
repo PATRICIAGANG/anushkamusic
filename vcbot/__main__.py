@@ -11,7 +11,7 @@ from vcbot.config import Config as VAR
 from time import perf_counter
 from vcbot.youtube import download, search, playlist
 from telethon.tl.custom import InlineBuilder as Builder
-
+from pytgcalls.implementation.group_call import GroupCall
 
 
 class Queue:
@@ -58,6 +58,8 @@ class Factory:
         return False
 
     async def start(self, id):
+        if self.is_connected:
+            await self.stop()
         await self.groupcall.start(id)
 
     async def start_video(self, input_):
@@ -82,6 +84,14 @@ def admin(func):
             return await func(event, *args, **kwargs)
     return runner
 
+def stopifstarted(func):
+    async def runner(event, *args, **kwargs):
+        group_call = factory.get_group_call()
+        if group_call.is_connected:
+            logging.info("Stopped running call")
+            await group_call.stop()
+        return await func(event, *args, **kwargs)
+    return runner
 
 @bot.on(events.NewMessage(from_users=VAR.ADMINS, pattern="/start"))
 async def start(event):
@@ -111,8 +121,9 @@ async def stop(event):
 @bot.on(events.CallbackQuery(pattern="Next|Any"))
 @bot.on(events.NewMessage(from_users=VAR.ADMINS, pattern="/next|/any"))
 @admin
+@stopifstarted
 async def switch(event):
-    await groupcall.stop()
+    
     await groupcall.start(event.chat_id)
     
     temp = await event.respond("Starting...")
