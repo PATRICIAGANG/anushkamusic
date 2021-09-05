@@ -306,12 +306,13 @@ async def etc(event):
         ]
     if hasattr(event, 'data'):
         case = event.data.decode('utf-8').lower()
-        temp = await event.edit("...")
+        # temp = await event.edit("...")
     else:
         case = event.raw_text.lower()[1:]
         temp = await event.respond("...")
     if case == 'start|join':
         await groupcall.start()
+
     elif case == 'stop':
         await groupcall.stop()
     elif case == 'resume':
@@ -320,6 +321,10 @@ async def etc(event):
         await groupcall.play_pause()
     elif case == 'replay':
         await groupcall.restart()
+    if hasattr(event, 'data'):
+        await event.answer(f"Successfully {case}ed")
+        return
+
     await temp.edit(f"Successfully {case}ed ",
         buttons=buttons
     
