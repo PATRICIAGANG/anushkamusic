@@ -175,7 +175,7 @@ async def switch(event):
 
         try:
             # video, audio, title = await redio_v(url)
-            audio = None
+            audio = True
             video, title = await download(url)
         except TypeError as e:
             await temp.edit(f"Failed: {e}")
@@ -223,7 +223,7 @@ async def play(event):
     if url:
         try:
             # video, audio, title = await redio_v(url)
-            audio = None
+            audio = True
             video, title = await download(url)
         except TypeError as e:
             await temp.edit(f"Failed: {e}")
