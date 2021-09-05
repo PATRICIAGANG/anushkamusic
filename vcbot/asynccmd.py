@@ -8,7 +8,7 @@ async def cmd(cmd):
         stdout=asyncio.subprocess.PIPE,
         stderr=asyncio.subprocess.PIPE)
 
-    stderr, stdout = await proc.communicate()
+    stdout, stderr = await proc.communicate()
     logging.debug(f'[{cmd!r} exited with {proc.returncode}]')
     
     if proc.returncode == 0:
