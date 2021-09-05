@@ -188,7 +188,7 @@ async def play(event):
     temp = await event.respond("Starting...")
     if url:
         try:
-            text = await redio_v(url)
+            video, audio, title = await redio_v(url)
         except TypeError as e:
             await temp.edit(f"Failed: {e}")
             return
@@ -198,13 +198,13 @@ async def play(event):
 
         await temp.edit("starting video+audio...")
         
-        if not text:
+        if not video or not audio:
             await temp.edit("can't decode")
             return
         else:
-            await groupcall.start_audio(text[1])
-            await groupcall.start_video(text[0], with_audio=False)
-            await temp.edit(f"**Currently Playing**: [{text[2]}]({url})",
+            await groupcall.start_audio(audio)
+            await groupcall.start_video(video, with_audio=False)
+            await temp.edit(f"**Currently Playing**: [{title}]({url})",
             buttons= [
                 [Button.inline("Next"), Button.inline("Any")],
                 [Button.inline("Stop")]
