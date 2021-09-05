@@ -1,0 +1,5 @@
+telethon
+pytube
+pytgcalls==3.0.0.dev12
+youtube-dl
+youtube-search-python
