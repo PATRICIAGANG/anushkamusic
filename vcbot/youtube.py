@@ -33,7 +33,7 @@ async def redio_v(url: str):
     yt = YoutubeDL({"format": "bestvideo[height<=480]+bestaudio"})
     x = yt.extract_info(yt_.watch_url, download=False)
     rtype = x['requested_formats']
-    return rtype[0]['url'], rtype[0]['url'], yt_.title
+    return rtype[0]['url'], rtype[1]['url'], yt_.title
     
     
 
@@ -56,4 +56,5 @@ if __name__ == '__main__':
     logging.basicConfig(level=logging.INFO)
     # asyncio.run(download("https://music.youtube.com/watch?v=KjBYB_zFYUc&list=RDAMVMKjBYB_zFYUc"))
     # asyncio.run(search("kishore kumar"))
-    asyncio.run(redio_v("https://music.youtube.com/watch?v=KjBYB_zFYUc"))
+    x = asyncio.run(redio_v("https://www.youtube.com/watch?v=b4KdawFO6o8"))
+    print(x)

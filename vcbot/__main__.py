@@ -147,9 +147,8 @@ async def switch(event):
         if event.data == b"Next":
             url = generator.any()
     if url:
-        await groupcall.start(event.chat_id)
         try:
-            text = await download(url)
+            video, audio, title = await redio_v(url)
         except TypeError as e:
             await temp.edit(f"Failed: {e}")
             return
@@ -159,12 +158,13 @@ async def switch(event):
 
         await temp.edit("starting video+audio...")
         
-        if not text:
+        if not video or not audio:
             await temp.edit("can't decode")
             return
         else:
-            await groupcall.start_video(text[0])
-            await temp.edit(f"**Currently Playing**: [{text[1]}]({url})",
+            await groupcall.start_audio(audio)
+            await groupcall.start_video(video, with_audio=False)
+            await temp.edit(f"**Currently Playing**: [{title}]({url})",
             buttons= [
                 [Button.inline("Next"), Button.inline("Any")],
                 [Button.inline("Stop")]
