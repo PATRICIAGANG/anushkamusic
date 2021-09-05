@@ -24,7 +24,8 @@ async def search(query: str):
     result = (await result.next())
     
     if result:
-        return result['result']
+        for i in result['result']:
+            yield i
     return
 async def playlist(url: str):
     result = await Playlist.getVideos(url)

@@ -84,14 +84,14 @@ def admin(func):
             return await func(event, *args, **kwargs)
     return runner
 
-def stopifstarted(func):
-    async def runner(event, *args, **kwargs):
-        group_call = factory.get_group_call()
-        if group_call.is_connected:
-            logging.info("Stopped running call")
-            await group_call.stop()
-        return await func(event, *args, **kwargs)
-    return runner
+# def stopifstarted(func):
+#     async def runner(event, *args, **kwargs):
+#         group_call = factory.get_group_call()
+#         if group_call.is_connected:
+#             logging.info("Stopped running call")
+#             await group_call.stop()
+#         return await func(event, *args, **kwargs)
+#     return runner
 
 @bot.on(events.NewMessage(from_users=VAR.ADMINS, pattern="/start"))
 async def start(event):
@@ -121,11 +121,10 @@ async def stop(event):
 @bot.on(events.CallbackQuery(pattern="Next|Any"))
 @bot.on(events.NewMessage(from_users=VAR.ADMINS, pattern="/next|/any"))
 @admin
-@stopifstarted
+# @stopifstarted
 async def switch(event):
     
-    await groupcall.start(event.chat_id)
-    
+    # await groupcall.groupcall.pause_playout()    
     temp = await event.respond("Starting...")
     url = False
     if hasattr(event, 'raw_text'):
@@ -142,6 +141,7 @@ async def switch(event):
         if event.data == b"Next":
             url = generator.any()
     if url:
+        await groupcall.start(event.chat_id)
         try:
             text = await download(url)
         except TypeError as e:
@@ -215,12 +215,12 @@ async def add_q(event):
 @bot.on(events.InlineQuery(users=VAR.ADMINS))
 async def search_yt(event):
     builder = Builder(bot)
-    result_ = await search(event.text)
+    result_ = search(event.text)
     if not result_:
         return
     result = []
 
-    for i in result_:
+    async for i in result_:
         if i['duration']:
             if i['duration'].count(':') > 2:
                 continue
