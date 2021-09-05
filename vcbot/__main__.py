@@ -179,8 +179,11 @@ async def switch(event):
             # await task2
             await asyncio.gather(task1, task2)
             await temp.edit(f"**Currently Playing**: [{title}]({url})",
-            buttons= [
+            buttons = [
                 [Button.inline("Next"), Button.inline("Any")],
+                [Button.inline("Resume")],
+                [Button.inline("Pause")],
+                # [Button.inline("Restart")],
                 [Button.inline("Stop")]
             ]
             )
@@ -219,8 +222,11 @@ async def play(event):
             await groupcall.start_audio(audio)
             await groupcall.start_video(video, with_audio=False)
             await temp.edit(f"**Currently Playing**: [{title}]({url})",
-            buttons= [
+           buttons = [
                 [Button.inline("Next"), Button.inline("Any")],
+                [Button.inline("Resume")],
+                [Button.inline("Pause")],
+                # [Button.inline("Restart")],
                 [Button.inline("Stop")]
             ]
             )
@@ -281,7 +287,7 @@ async def etc(event):
         [Button.inline("Next"), Button.inline("Any")],
         [Button.inline("Resume")],
         [Button.inline("Pause")],
-        [Button.inline("Restart")],
+        # [Button.inline("Restart")],
         [Button.inline("Stop")]
         ]
     if hasattr(event, 'data'):
