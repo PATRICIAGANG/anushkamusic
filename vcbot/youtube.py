@@ -12,9 +12,11 @@ from youtube_dl import YoutubeDL
 async def cmd_dl(yt, url):
     url_ = yt.video_id
     url = "https://www.youtube.com/watch?v=" + url_
+    logging.info("starting yt-dl")
     x = await cmd(f'youtube-dl -f "bestvideo[height<=480]+bestaudio" "{url}" -o "{url_}.%(ext)s" --no-continue')
     if not x:
         return
+    logging.info("stopped yt-dl")
     return glob.glob(url_+"*")[0]
 
 async def download(url):
