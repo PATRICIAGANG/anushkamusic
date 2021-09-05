@@ -65,7 +65,9 @@ class Factory:
     async def start_video(self, input_, repeat=False, with_audio=True):
         if self.is_connected:
             await self.groupcall.start_video(input_ ,repeat=repeat, with_audio=with_audio)
-        
+    async def start_audio(self, input_, repeat=False):
+        if self.is_connected:
+            await self.groupcall.start_audio(input_ ,repeat=repeat)     
 
 
 
@@ -200,7 +202,7 @@ async def play(event):
             await temp.edit("can't decode")
             return
         else:
-            await groupcall.groupcall.start_audio(text[1])
+            await groupcall.start_audio(text[1])
             await groupcall.start_video(text[0], with_audio=False)
             await temp.edit(f"**Currently Playing**: [{text[2]}]({url})",
             buttons= [
