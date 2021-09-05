@@ -181,7 +181,7 @@ async def play(event):
         
     else:
         url= event.pattern_match.group(1)
-    await groupcall.stop()
+    # await groupcall.stop()
     await groupcall.start(event.chat_id)
     temp = await event.respond("Starting...")
     if url:
