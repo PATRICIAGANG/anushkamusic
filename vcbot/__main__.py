@@ -158,6 +158,8 @@ async def switch(event):
         if event.data == b"Next":
             url = generator.any()
     if url:
+        await groupcall.start(event.chat_id)
+
         try:
             video, audio, title = await redio_v(url)
         except TypeError as e:
