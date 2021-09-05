@@ -163,7 +163,7 @@ async def switch(event):
         await groupcall.stop()
         await groupcall.start(event.chat_id)
         # await groupcall.start(event.chat_id)
-        await asyncio.sleep(2)
+        # await asyncio.sleep(2)
         
 
         try:
