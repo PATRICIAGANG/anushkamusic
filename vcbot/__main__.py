@@ -141,8 +141,10 @@ async def uptime(e):
 # @stopifstarted
 async def switch(event):
     
-    # await groupcall.groupcall.pause_playout()    
+    # await groupcall.groupcall.pause_playout()   
+     
     temp = await event.respond("Starting...")
+    
     url = False
     if hasattr(event, 'raw_text'):
         if event.raw_text == '/any':
@@ -159,6 +161,8 @@ async def switch(event):
             url = generator.any()
     if url:
         await groupcall.start(event.chat_id)
+        await asyncio.sleep(1)
+        
 
         try:
             video, audio, title = await redio_v(url)
@@ -175,11 +179,11 @@ async def switch(event):
             await temp.edit("can't decode")
             return
         else:
-            task1 = bot.loop.create_task(groupcall.start_audio(audio))
-            task2 = bot.loop.create_task(groupcall.start_video(video, with_audio=False))
-            # await task1
-            # await task2
-            await asyncio.gather(task1, task2)
+            task1 = groupcall.start_audio(audio)
+            task2 = groupcall.start_video(video, with_audio=False)
+            await task1
+            await task2
+            # await asyncio.gather(task1, task2)
             await temp.edit(f"**Currently Playing**: [{title}]({url})",
             buttons = [
                 [Button.inline("Next"), Button.inline("Any")],
