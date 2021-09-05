@@ -77,13 +77,13 @@ class Factory:
     async def play_pause(self, play=False):
         if self.is_connected:
             if play:
-                await self.groupcall.resume_playout()
+                self.groupcall.resume_playout()
             else:
-                await self.groupcall.pause_playout()
+                self.groupcall.pause_playout()
     
     async def restart(self):
         if self.is_connected:
-            await self.groupcall.restart_playout()
+            self.groupcall.restart_playout()
 
 
 
@@ -273,8 +273,8 @@ async def add_lst(event):
         total = generator.add(i)
     await event.reply(f"Added: Total: {total}")
 
-@bot.on(events.CallbackQuery(pattern="Start|Join|Resume|Pause|Restart|Stop"))
-@bot.on(events.NewMessage(from_users=VAR.ADMINS, pattern=".start|.join|.resume|.pause|.restart|.stop"))
+@bot.on(events.CallbackQuery(pattern="Start|Join|Resume|Pause|Replay|Stop"))
+@bot.on(events.NewMessage(from_users=VAR.ADMINS, pattern=".start|.join|.resume|.pause|.replay|.stop"))
 @admin
 async def etc(event):
     buttons = [
@@ -298,7 +298,7 @@ async def etc(event):
         await groupcall.play_pause(True)
     elif case == 'pause':
         await groupcall.play_pause()
-    elif case == 'restart':
+    elif case == 'replay':
         await groupcall.restart()
     await temp.edit(f"Successfully {case}ed ",
         buttons=buttons
