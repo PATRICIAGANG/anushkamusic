@@ -75,11 +75,15 @@ groupcall = Factory()
 def admin(func):
     async def runner(event, *args, **kwargs):
         if hasattr(event, 'data'):
-            sender = await event.get_sender()
-            if sender.id in VAR.ADMINS:
-                return await func(event, *args, **kwargs)
-            else:
-                pass
+            try:
+
+                sender = await event.get_sender()
+                if sender.id in VAR.ADMINS:
+                    return await func(event, *args, **kwargs)
+                else:
+                    pass
+            except ValueError:
+                await event.answer("NoneType: Retry")
         else:
             return await func(event, *args, **kwargs)
     return runner
@@ -120,7 +124,7 @@ async def stop(event):
  
 @bot.on(events.CallbackQuery(chats=VAR.ADMINS, pattern="Next|Any"))
 @bot.on(events.NewMessage(from_users=VAR.ADMINS, pattern="/next|/any"))
-# @admin
+@admin
 # @stopifstarted
 async def switch(event):
     
