@@ -82,7 +82,7 @@ def admin(func):
                     return await func(event, *args, **kwargs)
                 else:
                     pass
-            except ValueError:
+            except (ValueError, TypeError):
                 await event.answer("NoneType: Retry")
         else:
             return await func(event, *args, **kwargs)
