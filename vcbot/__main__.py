@@ -118,15 +118,15 @@ def admin(func):
 #         return await func(event, *args, **kwargs)
 #     return runner
 
-@bot.on(events.NewMessage(from_users=VAR.ADMINS, pattern="/start"))
-async def start(event):
-    await groupcall.start(event.chat_id)
-    await event.respond("started",
-    buttons = [
-        [Button.inline("Next"), Button.inline("Any")],
-        [Button.inline("Stop")]
-        ]
-    )
+# @bot.on(events.NewMessage(from_users=VAR.ADMINS, pattern="/start"))
+# async def start(event):
+#     await groupcall.start(event.chat_id)
+#     await event.respond("started",
+#     buttons = [
+#         [Button.inline("Next"), Button.inline("Any")],
+#         [Button.inline("Stop")]
+#         ]
+#     )
  
 @bot.on(events.NewMessage(from_users=VAR.ADMINS, pattern="/iiii"))
 async def uptime(e):
@@ -301,7 +301,7 @@ async def etc(event):
     elif case == 'restart':
         await groupcall.restart()
     await temp.edit(f"Successfully {case}ed ",
-        button=buttons
+        buttons=buttons
     
     )
     
