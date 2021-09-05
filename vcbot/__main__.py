@@ -216,7 +216,7 @@ async def search_yt(event):
         
         x = builder.article(
             title=i['title'],
-            description=i['descriptionSnippet'][0]['text'] if i['descriptionSnippet'] else i['title'],
+            description=i['duration'] if i['duration'] else i['title'],
             text='/add '+ i['link'],
             thumb=InputWebDocument(i['thumbnails'][0]['url'], 0, mime_type='image/jpeg', attributes=[]),
             buttons=Button.inline('Play Now', '/play ' + i['id']),
