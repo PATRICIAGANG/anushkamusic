@@ -9,7 +9,7 @@ from telethon.tl.types import InputWebDocument
 from vcbot import *
 from vcbot.config import Config as VAR
 from time import perf_counter
-from vcbot.youtube import download, search, playlist
+from vcbot.youtube import download, search, playlist, redio_v
 from telethon.tl.custom import InlineBuilder as Builder
 from pytgcalls.implementation.group_call import GroupCall
 
@@ -62,9 +62,9 @@ class Factory:
             await self.stop()
         await self.groupcall.start(id)
 
-    async def start_video(self, input_):
+    async def start_video(self, input_, repeat=False, with_audio=True):
         if self.is_connected:
-            await self.groupcall.start_video(input_ ,repeat=False)
+            await self.groupcall.start_video(input_ ,repeat=repeat, with_audio=with_audio)
         
 
 
@@ -186,7 +186,7 @@ async def play(event):
     temp = await event.respond("Starting...")
     if url:
         try:
-            text = await download(url)
+            text = await redio_v(url)
         except TypeError as e:
             await temp.edit(f"Failed: {e}")
             return
@@ -200,8 +200,9 @@ async def play(event):
             await temp.edit("can't decode")
             return
         else:
-            await groupcall.start_video(text[0])
-            await temp.edit(f"**Currently Playing**: [{text[1]}]({url})",
+            await groupcall.groupcall.start_audio(text[1])
+            await groupcall.start_video(text[0], with_audio=False)
+            await temp.edit(f"**Currently Playing**: [{text[2]}]({url})",
             buttons= [
                 [Button.inline("Next"), Button.inline("Any")],
                 [Button.inline("Stop")]

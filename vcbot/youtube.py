@@ -1,10 +1,14 @@
 import asyncio
 import logging
-from vcbot.asynccmd import cmd
-# from asynccmd import cmd
+try:
+    from vcbot.asynccmd import cmd
+except ImportError:
+    from asynccmd import cmd
 from pytube import YouTube
 from youtubesearchpython.__future__ import VideosSearch, Playlist
 import re, glob
+from pprint import pp
+from youtube_dl import YoutubeDL
 async def cmd_dl(yt, url):
     url_ = yt.video_id
     url = "https://www.youtube.com/watch?v=" + url_
@@ -18,6 +22,20 @@ async def download(url):
         return
     yt = YouTube(url)
     return await cmd_dl(yt, url), yt.title
+
+async def redio_v(url: str):
+    """
+    video, audio, title
+    
+    """
+    yt_ = YouTube(url)
+    # yt = YoutubeDL({"format": "bestaudio"})
+    yt = YoutubeDL({"format": "bestvideo[height<=480]+bestaudio"})
+    x = yt.extract_info(yt_.watch_url, download=False)
+    rtype = x['requested_formats']
+    return rtype[0]['url'], rtype[0]['url'], yt_.title
+    
+    
 
 async def search(query: str):
     result = VideosSearch(query, limit=20)
@@ -37,4 +55,5 @@ async def playlist(url: str):
 if __name__ == '__main__':
     logging.basicConfig(level=logging.INFO)
     # asyncio.run(download("https://music.youtube.com/watch?v=KjBYB_zFYUc&list=RDAMVMKjBYB_zFYUc"))
-    asyncio.run(search("kishore kumar"))
+    # asyncio.run(search("kishore kumar"))
+    asyncio.run(redio_v("https://music.youtube.com/watch?v=KjBYB_zFYUc"))
