@@ -238,9 +238,13 @@ async def play(event):
             await temp.edit("can't decode")
             return
         else:
-            # await groupcall.start_audio(audio)
-            # await groupcall.start_video(video, with_audio=False)
-            await groupcall.start_video(video, with_audio=True)
+            try:
+                # await groupcall.start_audio(audio)
+                # await groupcall.start_video(video, with_audio=False)
+                await groupcall.start_video(video, with_audio=True)
+            except RuntimeError as e:
+                await temp.edit(f"{e}")
+
             await temp.edit(f"**Currently Playing**: [{title}]({url})",
            buttons = [
                 [Button.inline("Next"), Button.inline("Any")],
