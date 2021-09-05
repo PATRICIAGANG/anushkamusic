@@ -13,7 +13,6 @@ from vcbot.youtube import download, search, playlist
 from telethon.tl.custom import InlineBuilder as Builder
 
 
-logging.basicConfig(level=logging.info)
 
 class Queue:
     def __init__(self, ):
