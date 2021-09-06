@@ -53,7 +53,8 @@ class Factory:
         
 
     async def stop(self):
-        await self.groupcall.stop()
+        group_call = factory.get_group_call()
+        await group_call.stop()
         self.is_running = False
 
     @property 
@@ -167,8 +168,8 @@ async def switch(event):
         if event.data == b"Next":
             url = generator.any()
     if url:
-        await group_call.stop()
-        await group_call.start(event.chat_id)
+        # await group_call.stop()
+        await groupcall.start(event.chat_id)
         # await groupcall.start(event.chat_id)
         # await asyncio.sleep(2)
         
@@ -329,8 +330,7 @@ async def etc(event):
         await groupcall.start()
 
     elif case == 'stop':
-        group_call = factory.get_group_call()
-        await group_call.stop()
+        await groupcall.stop()
     elif case == 'resume':
         await groupcall.play_pause(True)
     elif case == 'pause':
