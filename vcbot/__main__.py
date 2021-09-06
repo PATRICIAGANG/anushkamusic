@@ -47,13 +47,13 @@ factory = GroupCallFactory(user, GroupCallFactory.MTPROTO_CLIENT_TYPE.TELETHON)
 class Factory:
     def __init__(self) -> None:
         self.groupcall = None
-        self.first_time = True
+        # self.first_time = True
         
 
     async def stop(self):
         if self.groupcall:
             await self.groupcall.stop()
-        self.is_running = False
+        # self.is_running = False
 
     @property 
     def is_connected(self):
@@ -62,15 +62,15 @@ class Factory:
         return False
 
     async def start(self, id):
-        if self.first_time or not self.groupcall:
+        if not self.groupcall:
             self.groupcall = factory.get_group_call()
-            self.first_time = False
+            # self.first_time = False
         await self.groupcall.start(id)
 
 
     async def start_video(self, id, input_):
         if self.groupcall:
-            await self.start(id)
+            # await self.start(id)
             await self.groupcall.start_video(input_)
 
     async def start_audio(self, input_, repeat=False):
