@@ -1,7 +1,7 @@
 
 import asyncio
 # from asyncio.locks import Event
-# import os
+import os
 import traceback
 import logging
 import random
@@ -170,7 +170,11 @@ async def isconn(e):
         await e.reply("yes")
     else:
         await e.resply("No")
- 
+
+@bot.on(events.NewMessage(from_users=VAR.ADMINS, pattern='isconn'))
+async def gitpull(e):
+    txt = os.popen("git pull").read()
+    await e.respond(txt)
  
 @bot.on(events.CallbackQuery(pattern="Next|Any"))
 @bot.on(events.NewMessage(from_users=VAR.ADMINS, pattern="/next|/any"))
