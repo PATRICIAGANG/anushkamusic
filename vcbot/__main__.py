@@ -201,7 +201,11 @@ async def switch(event):
 @bot.on(events.NewMessage(from_users=VAR.ADMINS, pattern="/play (.+)"))
 @admin
 async def play(event):
+
+    temp = await event.respond("Starting...")
     if hasattr(event, 'data'):
+        await temp.delete()
+        await temp.edit("strating...")
         url= event.pattern_match.group(1)
         url = "https://www.youtube.com/watch?v=" + url.decode('utf-8')
         
@@ -212,9 +216,8 @@ async def play(event):
     try:
         await groupcall.start(event.chat_id)
     except asyncio.TimeoutError:
-        await event.respond("**Error**: Failed to connect voice call")
+        await temp.edit("**Error**: Failed to connect voice call")
         return
-    temp = await event.respond("Starting...")
     if url:
         try:
             # video, audio, title = await redio_v(url)
