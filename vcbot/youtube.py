@@ -54,7 +54,8 @@ async def fetch_stream(url: str):
             yt = YouTube(url)
             command = f'youtube-dl -f "best[height>=?480]/best" "{url}" -o "./downloads/{yt.video_id}.%(ext)s" --no-continue --no-playlist --verbose'
             await asyncio.wait_for(cmd(command), timeout=30)
-            return path[0] if path := glob.glob('./downloads/'+ yt.video_id +"*") else None, yt.title, None
+            path = glob.glob('./downloads/'+ yt.video_id +"*")
+            return path[0] if path else None, yt.title, None
         except asyncio.TimeoutError:
             return None, None, "TimeoutError: Can't wait too long for download"
         except Exception as e:
