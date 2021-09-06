@@ -368,6 +368,7 @@ async def stream(event):
     # if os.path.exists(f"./downloads/{message.file.name}"):
     #     await cmd(f"rm './downloads/{message.file.name}'")
     # await cmd("rm './downloads/*")
+    await groupcall.stop()
     clear()
     async with bot.action(event.chat_id, 'record-video') as action:
         loc = await message.download_media("./downloads", progress_callback=action.progress)
