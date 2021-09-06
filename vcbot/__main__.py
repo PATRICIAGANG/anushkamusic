@@ -164,7 +164,12 @@ async def uptime(event):
     await event.respond(f"days: {days}, hours: {hours}, minutes: {minutes}, seconds: {seconds}")
     
 
-
+@bot.on(events.NewMessage(from_users=VAR.ADMINS, pattern='isconn'))
+async def isconn(e):
+    if groupcall.is_connected:
+        await e.reply("yes")
+    else:
+        await e.resply("No")
  
  
 @bot.on(events.CallbackQuery(pattern="Next|Any"))
@@ -225,7 +230,7 @@ async def play(event):
     # await groupcall.stop()
 
     try:
-        await groupcall.stop()
+        # await groupcall.stop()
         await groupcall.start(event.chat_id)
     except asyncio.TimeoutError:
         await temp.edit("**Error**: Failed to connect voice call")
