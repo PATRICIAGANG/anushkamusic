@@ -1,21 +1,21 @@
 
 import asyncio
-from asyncio.locks import Event
-import os
+# from asyncio.locks import Event
+# import os
 import traceback
 import logging
 import random
 # from vcbot.asynccmd import cmd
 from vcbot.util import clear
-from telethon import client, events
+from telethon import events
 from telethon import Button
 from telethon.tl.types import InputWebDocument
 from vcbot import *
 from vcbot.config import Config as VAR
-from time import perf_counter, strftime
+# from time import perf_counter, strftime
 from vcbot.youtube import download, search, playlist, redio_v
 from telethon.tl.custom import InlineBuilder as Builder
-from pytgcalls.implementation.group_call import GroupCall
+# from pytgcalls.implementation.group_call import GroupCall
 from pytube import YouTube
 
 class Queue:
@@ -343,19 +343,25 @@ async def etc(event):
         temp = await event.respond("...")
     if case == 'start|join':
         await groupcall.start()
+        case = case + 'ed'
     elif case == 'stop':
         await groupcall.stop()
+        case = case + 'ped'
+
     elif case == 'resume':
         await groupcall.play_pause(True)
+        case = case + 'd'
     elif case == 'pause':
         await groupcall.play_pause()
+        case = case + 'd'
     elif case == 'replay':
         await groupcall.restart()
+        case = case + 'ed'
     if hasattr(event, 'data'):
         await event.answer(f"Successfully {case}ed")
         return
 
-    await temp.edit(f"Successfully {case}ed ",
+    await temp.edit(f"Successfully {case}",
         buttons=buttons
     
     )
@@ -404,5 +410,5 @@ async def stream(event):
 
 
 
-
+bot.loop.create_task(bot.send_message(VAR.ADMINS[0], "Restarted"))
 user.run_until_disconnected()
