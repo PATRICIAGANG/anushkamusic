@@ -13,7 +13,7 @@ async def cmd_dl(yt, url):
     url_ = yt.video_id
     url = "https://www.youtube.com/watch?v=" + url_
     logging.info("starting yt-dl")
-    x = await asyncio.wait_for(cmd(f'youtube-dl -f "best[height<=480]" "{url}" -o "{url_}.%(ext)s" --no-continue'), timeout=60) #
+    x = await asyncio.wait_for(cmd(f'youtube-dl -f "best[height<=480]" "{url}" -o "{url_}.%(ext)s" --no-continue'), timeout=30) #
     if not x:
         return
     logging.info("stopped yt-dl")
