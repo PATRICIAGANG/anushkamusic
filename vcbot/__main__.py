@@ -5,7 +5,7 @@ import os
 import traceback
 import logging
 import random
-from typing import Awaitable
+# from typing import Awaitable
 # from vcbot.asynccmd import cmd
 from vcbot.util import clear
 from telethon import events
@@ -166,7 +166,7 @@ async def uptime(event):
     await event.respond(f"days: {days}, hours: {hours}, minutes: {minutes}, seconds: {seconds}")
     
 
-@bot.on(events.NewMessage(from_users=VAR.ADMINS, pattern='isconn'))
+@bot.on(events.NewMessage(from_users=VAR.ADMINS, pattern='/isconn'))
 async def isconn(e):
     if groupcall.is_connected:
         await e.reply("yes")
@@ -254,7 +254,9 @@ async def play(event):
             await temp.edit(f"Failed: {e}")
             return
         except asyncio.TimeoutError:
-            await temp.edit("**TimeoutError**: Can't wait too long to download")
+            await temp.edit("**TimeoutError**: Can't wait too long to download",
+            # buttons=[Button.inline("Retry", f"/play {url}")]
+            )
             return
         except Exception:
             await temp.edit(traceback.format_exc())
