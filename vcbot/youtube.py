@@ -52,7 +52,7 @@ async def fetch_stream(url: str):
     except (KeyError, Exception):
         try:
             yt = YouTube(url)
-            command = f'youtube-dl -f "best[height>=?480]/best" "{url}" -o "./downloads/{yt.video_id}.%(ext)s" --no-continue --no-playlist --verbose'
+            command = f'youtube-dl -f "best[height=?480]/best" "{url}" -o "./downloads/{yt.video_id}.%(ext)s" --no-continue --no-playlist --verbose'
             await asyncio.wait_for(cmd(command), timeout=30)
             path = glob.glob('./downloads/'+ yt.video_id +"*")
             return path[0] if path else None, yt.title, None
