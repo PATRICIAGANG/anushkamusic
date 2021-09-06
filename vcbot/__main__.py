@@ -66,7 +66,7 @@ class Factory:
             self.groupcall = factory.get_group_call()
             # self.first_time = False
         if self.groupcall.is_connected:
-            await self.groupcall.stop()
+            await self.groupcall.stop()  
         await self.groupcall.start(id)
 
 
@@ -172,9 +172,14 @@ async def switch(event):
         if event.data == b"Next":
             url = generator.any()
     if url:
-        await groupcall.stop()
-        # await group_call.start(event.chat_id)
-        await groupcall.start(event.chat_id)
+        # await groupcall.stop()
+        # await group_call.start(event.chat_id)'
+        try:
+            await groupcall.start(event.chat_id)
+        except asyncio.TimeoutError:
+            await temp.edit("**Error**: Failed to connect voice call")
+            return
+
         # await asyncio.sleep(2)
         
 
@@ -230,7 +235,12 @@ async def play(event):
     else:
         url= event.pattern_match.group(1)
     # await groupcall.stop()
-    await groupcall.start(event.chat_id)
+
+    try:
+        await groupcall.start(event.chat_id)
+    except asyncio.TimeoutError:
+        await event.respond("**Error**: Failed to connect voice call")
+        return
     temp = await event.respond("Starting...")
     if url:
         try:
