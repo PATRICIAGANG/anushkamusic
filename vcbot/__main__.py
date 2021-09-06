@@ -205,7 +205,7 @@ async def play(event):
     temp = await event.respond("Starting...")
     if hasattr(event, 'data'):
         await temp.delete()
-        await temp.edit("strating...")
+        temp = await event.edit("starting...")
         url= event.pattern_match.group(1)
         url = "https://www.youtube.com/watch?v=" + url.decode('utf-8')
         
