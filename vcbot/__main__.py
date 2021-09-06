@@ -377,7 +377,7 @@ async def etc(event):
         
     
     
-
+@bot.on()
 
 
 
