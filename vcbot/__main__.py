@@ -51,7 +51,7 @@ class Factory:
         
 
     async def stop(self):
-        groupcall = self.factory.get_group_call()
+        groupcall = factory.get_group_call()
         await groupcall.stop()
         self.is_running = False
 
