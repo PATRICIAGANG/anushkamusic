@@ -169,7 +169,7 @@ async def switch(event):
         if event.data == b"Next":
             url = generator.any()
     if url:
-        # await group_call.stop()
+        await groupcall.stop()
         await groupcall.start(event.chat_id)
         # await groupcall.start(event.chat_id)
         # await asyncio.sleep(2)
