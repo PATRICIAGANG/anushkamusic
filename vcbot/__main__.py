@@ -61,8 +61,10 @@ class Factory:
 
     @property 
     def is_connected(self):
-        if self.groupcall.is_connected:
-            return True
+        if self.groupcall:
+            if self.groupcall.is_connected:
+                return True
+            return False
         return False
 
     async def start(self, id):
@@ -171,10 +173,10 @@ async def isconn(e):
     else:
         await e.resply("No")
 
-@bot.on(events.NewMessage(from_users=VAR.ADMINS, pattern='isconn'))
-async def gitpull(e):
-    txt = os.popen("git pull").read()
-    await e.respond(txt)
+# @bot.on(events.NewMessage(from_users=VAR.ADMINS, pattern='isconn'))
+# async def gitpull(e):
+#     txt = os.popen("git pull").read()
+#     await e.respond(txt)
  
 @bot.on(events.CallbackQuery(pattern="Next|Any"))
 @bot.on(events.NewMessage(from_users=VAR.ADMINS, pattern="/next|/any"))
