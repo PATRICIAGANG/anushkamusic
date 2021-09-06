@@ -5,6 +5,7 @@ import asyncio
 import traceback
 import logging
 import random
+from typing import Awaitable
 # from vcbot.asynccmd import cmd
 from vcbot.util import clear
 from telethon import events
@@ -224,6 +225,7 @@ async def play(event):
     # await groupcall.stop()
 
     try:
+        await groupcall.stop()
         await groupcall.start(event.chat_id)
     except asyncio.TimeoutError:
         await temp.edit("**Error**: Failed to connect voice call")
