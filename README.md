@@ -13,7 +13,7 @@ python -m vcbot
 **Modify `vcbot/config.py`**
 - ADD **[API_ID, API_HASH](https://my.telegram.org/auth)**
 - ADD **[TELETHON SESSION STRING]()**
-- ADD **[BOT TOKEN](https://t.me/BotFather)**
+- ADD **[BOT_TOKEN](https://t.me/BotFather)**
 - ADD **ALLOWED USERS** (integer) in ADMINS list
 ## Commands
  - `.start` - start/join Vc
