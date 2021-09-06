@@ -329,7 +329,8 @@ async def etc(event):
         await groupcall.start()
 
     elif case == 'stop':
-        await groupcall.stop()
+        group_call = factory.get_group_call()
+        await group_call.stop()
     elif case == 'resume':
         await groupcall.play_pause(True)
     elif case == 'pause':
