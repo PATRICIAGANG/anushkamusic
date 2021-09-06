@@ -67,12 +67,14 @@ class Factory:
     async def start(self, id):
         if self.is_connected:
             await self.stop()
-        await self.groupcall.start(id)
+        groupcall = self.factory.get_group_call()
+        await groupcall.stop()
 
     async def start_video(self, input_, repeat=False, with_audio=True):
         if self.is_connected or self.first_time_v:
             groupcall = self.factory.get_group_call()
             # await groupcall.stop()
+            # await groupcall.start()
             await groupcall.start_video(input_ ,repeat=repeat, with_audio=with_audio)
             self.is_running = True
             self.first_time_v = False
