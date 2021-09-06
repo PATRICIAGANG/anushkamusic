@@ -1,10 +1,12 @@
 
 import asyncio
 from asyncio.locks import Event
+import os
 import traceback
 import logging
 import random
-from telethon import events
+from vcbot.asynccmd import cmd
+from telethon import client, events
 from telethon import Button
 from telethon.tl.types import InputWebDocument
 from vcbot import *
@@ -13,7 +15,7 @@ from time import perf_counter
 from vcbot.youtube import download, search, playlist, redio_v
 from telethon.tl.custom import InlineBuilder as Builder
 from pytgcalls.implementation.group_call import GroupCall
-
+from pytube import YouTube
 
 class Queue:
     def __init__(self, ):
@@ -181,48 +183,10 @@ async def switch(event):
         if event.data == b"Next":
             url = generator.any()
     if url:
-        # await groupcall.stop()
-        # await group_call.start(event.chat_id)'
-        try:
-            await groupcall.start(event.chat_id)
-        except asyncio.TimeoutError:
-            await temp.edit("**Error**: Failed to connect voice call")
-            return
-
-        # await asyncio.sleep(2)
-        
-
-        try:
-            # video, audio, title = await redio_v(url)
-            audio = True
-            video, title = await download(url)
-        except TypeError as e:
-            await temp.edit(f"Failed: {e}")
-            return
-        except asyncio.TimeoutError:
-            await temp.edit("TimeoutError: Can't wait too long for download")
-            return
-        except Exception:
-            await temp.edit(traceback.format_exc())
-            return
-
-        await temp.edit("starting video+audio...")
-        
-        if not video or not audio:
-            await temp.edit("can't decode")
-            return
-        else:
-            try:
-                # await groupcall.start_audio(audio)
-                # await groupcall.start_video(video, with_audio=False)
-                await groupcall.start_video(video)
-            except RuntimeError as e:
-                await temp.edit(f"{e}")
-                return
-         
-            # await asyncio.gather(task1, task2)
-            await temp.edit(f"**Currently Playing**: [{title}]({url})",
+        yt = YouTube(url)
+        await temp.edit(f"**Name**: [{yt.title}]({yt.watch_url})",
             buttons = [
+                [Button.inline("Play", '/play ' + yt.video_id)],
                 [Button.inline("Next"), Button.inline("Any")],
                 [Button.inline("Resume")],
                 [Button.inline("Pause")],
@@ -377,7 +341,30 @@ async def etc(event):
         
     
     
-@bot.on()
+@bot.on(events.NewMessage(from_users=VAR.ADMINS, pattern=".fstream", func=lambda e: e.is_reply))
+async def stream(event):
+    message = await event.get_reply_message()
+    if not message.file or not message.video:
+        await message.reply("No file detected")
+        return
+    if message.file.size > 1e+6:
+        await message.reply("File too big")
+        return
+    async with client.action(event.chat_id, 'record-video') as action:
+        loc = await message.download_file("./downloads", progress_callback=action.progress)
+
+    try:
+        await groupcall.start(event.chat_id)
+    except asyncio.TimeoutError:
+        await event.respond("**Error**: Failed to connect voice call")
+        await cmd(f"rm {loc}")
+        return
+    try:
+        await groupcall.start_video(loc)
+    except Exception:
+        await message.reply(traceback.format_exc())
+
+
 
 
 
