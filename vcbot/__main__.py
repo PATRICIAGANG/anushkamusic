@@ -245,7 +245,7 @@ async def play(event):
                 return
 
             await temp.edit(f"**Currently Playing**: [{title}]({url})",
-           buttons = [
+            buttons = [
                 [Button.inline("Next"), Button.inline("Any")],
                 [Button.inline("Resume")],
                 [Button.inline("Pause")],
@@ -357,11 +357,19 @@ async def stream(event):
         await groupcall.start(event.chat_id)
     except asyncio.TimeoutError:
         await event.respond("**Error**: Failed to connect voice call")
-        await cmd(f"rm {loc}")
+        await cmd(f"rm '{loc}'")
         return
     try:
         await groupcall.start_video(loc)
-        await message.reply("Playing...")
+        await message.reply("Playing...",
+        buttons = [
+            [Button.inline("Next"), Button.inline("Any")],
+            [Button.inline("Resume")],
+            [Button.inline("Pause")],
+            # [Button.inline("Restart")],
+            [Button.inline("Stop")]
+            ]
+        )
     except Exception:
         await message.reply(traceback.format_exc())
 
