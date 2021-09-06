@@ -206,6 +206,8 @@ async def play(event):
     if hasattr(event, 'data'):
         await temp.delete()
         temp = await event.edit("starting...")
+        if isinstance(temp, bool):
+            temp = await event.respond("starting...")
         url= event.pattern_match.group(1)
         url = "https://www.youtube.com/watch?v=" + url.decode('utf-8')
         
