@@ -154,7 +154,7 @@ def notimeout(func):
         
 @bot.on(events.NewMessage(from_users=VAR.ADMINS, pattern="/uptime"))
 async def uptime(event):
-    SO_TIME_IS = INIT_TIME - datetime.now()
+    SO_TIME_IS = datetime.now() - INIT_TIME
     await event.respond(f"{SO_TIME_IS}")
     
 
