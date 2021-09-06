@@ -4,4 +4,4 @@ pytgcalls==3.0.0.dev13
 youtube-dl
 youtube-search-python
 cryptg
-pillow
+Pillow
