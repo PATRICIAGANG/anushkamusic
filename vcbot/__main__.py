@@ -5,7 +5,8 @@ import os
 import traceback
 import logging
 import random
-from vcbot.asynccmd import cmd
+# from vcbot.asynccmd import cmd
+from vcbot.util import clear
 from telethon import client, events
 from telethon import Button
 from telethon.tl.types import InputWebDocument
@@ -222,7 +223,8 @@ async def play(event):
         return
 
     # if os.path.exists(f"./downloads/{message.file.name}"):
-    await cmd(f"rm './downloads/*'")
+    # await cmd(f"rm './downloads/*'")
+    clear()
     if url:
         try:
             # video, audio, title = await redio_v(url)
@@ -365,7 +367,8 @@ async def stream(event):
         return
     # if os.path.exists(f"./downloads/{message.file.name}"):
     #     await cmd(f"rm './downloads/{message.file.name}'")
-    await cmd("rm './downloads/*")
+    # await cmd("rm './downloads/*")
+    clear()
     async with bot.action(event.chat_id, 'record-video') as action:
         loc = await message.download_media("./downloads", progress_callback=action.progress)
 
@@ -373,7 +376,8 @@ async def stream(event):
         await groupcall.start(event.chat_id)
     except asyncio.TimeoutError:
         await event.respond("**Error**: Failed to connect voice call")
-        await cmd(f"rm '{loc}'")
+        # await cmd(f"rm '{loc}'")
+        clear()
         return
     try:
         await groupcall.start_video(loc)
