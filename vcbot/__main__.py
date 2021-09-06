@@ -351,7 +351,7 @@ async def stream(event):
         await message.reply("File too big")
         return
     async with bot.action(event.chat_id, 'record-video') as action:
-        loc = await message.download_file("./downloads", progress_callback=action.progress)
+        loc = await message.download_media("./downloads", progress_callback=action.progress)
 
     try:
         await groupcall.start(event.chat_id)
