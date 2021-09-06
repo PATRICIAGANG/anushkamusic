@@ -12,7 +12,7 @@ from telethon import Button
 from telethon.tl.types import InputWebDocument
 from vcbot import *
 from vcbot.config import Config as VAR
-from time import perf_counter
+from time import perf_counter, strftime
 from vcbot.youtube import download, search, playlist, redio_v
 from telethon.tl.custom import InlineBuilder as Builder
 from pytgcalls.implementation.group_call import GroupCall
@@ -152,9 +152,11 @@ def notimeout(func):
             return await event.respond(traceback.format_exc())
     return runner
         
-@bot.on(events.NewMessage(from_users=VAR.ADMINS, pattern="/iiii"))
-async def uptime(e):
-    await e.respond(f"Uptime: {perf_counter()/1e-9}")
+@bot.on(events.NewMessage(from_users=VAR.ADMINS, pattern="/uptime"))
+async def uptime(event):
+    SO_TIME_IS = INIT_TIME - datetime.now()
+    await event.respond(f"{SO_TIME_IS:%d:%H:%M:%S}")
+    
 
 
  
