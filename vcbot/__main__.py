@@ -149,7 +149,7 @@ async def uptime(e):
 async def switch(event):
     
     # await groupcall.groupcall.pause_playout()   
-     
+    group_call = factory.get_group_call()
     temp = await event.respond("Starting...")
     
     url = False
@@ -167,8 +167,8 @@ async def switch(event):
         if event.data == b"Next":
             url = generator.any()
     if url:
-        await groupcall.stop()
-        await groupcall.start(event.chat_id)
+        await group_call.stop()
+        await group_call.start(event.chat_id)
         # await groupcall.start(event.chat_id)
         # await asyncio.sleep(2)
         
@@ -193,7 +193,7 @@ async def switch(event):
             try:
                 # await groupcall.start_audio(audio)
                 # await groupcall.start_video(video, with_audio=False)
-                await groupcall.start_video(video, with_audio=True)
+                await group_call.start_video(video, True, False)
             except RuntimeError as e:
                 await temp.edit(f"{e}")
                 return
