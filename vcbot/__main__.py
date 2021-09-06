@@ -195,7 +195,7 @@ async def switch(event):
             try:
                 # await groupcall.start_audio(audio)
                 # await groupcall.start_video(video, with_audio=False)
-                await groupcall.start_video(video, True, False)
+                await groupcall.start_video(video)
             except RuntimeError as e:
                 await temp.edit(f"{e}")
                 return
