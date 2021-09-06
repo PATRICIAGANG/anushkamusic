@@ -300,7 +300,12 @@ async def add_lst(event):
     url =  event.pattern_match.group(1)
     if not url:
         return
-    result = await playlist(url)
+    try:
+
+        result = await playlist(url)
+    except Exception:
+        await event.reply("Failed to fetch url")
+        return
     if not result:
         return
     total = 0
