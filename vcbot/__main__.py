@@ -364,7 +364,7 @@ async def stream(event):
         return
     try:
         await groupcall.start_video(loc)
-        await message.reply("Playing...",
+        await message.reply(f"**Playing**: {message.file.name}",
         buttons = [
             [Button.inline("Next"), Button.inline("Any")],
             [Button.inline("Resume")],
