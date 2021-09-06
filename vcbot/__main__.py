@@ -70,11 +70,11 @@ class Factory:
         groupcall = self.factory.get_group_call()
         await groupcall.start(id)
 
-    async def start_video(self, input_, repeat=False, with_audio=True):
+    async def start_video(self, id, input_, repeat=False, with_audio=True):
         if self.is_connected or self.first_time_v:
             groupcall = self.factory.get_group_call()
             await groupcall.stop()
-            await groupcall.start()
+            await groupcall.start(id)
             await groupcall.start_video(input_ ,repeat=repeat, with_audio=with_audio)
             self.is_running = True
             self.first_time_v = False
@@ -199,7 +199,7 @@ async def switch(event):
             try:
                 # await groupcall.start_audio(audio)
                 # await groupcall.start_video(video, with_audio=False)
-                await groupcall.start_video(video)
+                await groupcall.start_video(event.chat_id, video)
             except RuntimeError as e:
                 await temp.edit(f"{e}")
                 return
