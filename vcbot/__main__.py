@@ -47,14 +47,15 @@ factory = GroupCallFactory(user, GroupCallFactory.MTPROTO_CLIENT_TYPE.TELETHON)
 class Factory:
     def __init__(self) -> None:
         self.groupcall = factory.get_group_call()
+        self.factory = factory
         self.is_running = False
         self.first_time_a = True
         self.first_time_v = True
         
 
     async def stop(self):
-        group_call = factory.get_group_call()
-        await group_call.stop()
+        groupcall = self.factory.get_group_call()
+        await groupcall.stop()
         self.is_running = False
 
     @property 
