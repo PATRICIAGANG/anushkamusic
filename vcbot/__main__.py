@@ -1,22 +1,18 @@
 
 import asyncio
-# from asyncio.locks import Event
-import os
+
 import traceback
 import logging
 import random
-# from typing import Awaitable
-# from vcbot.asynccmd import cmd
+
 from vcbot.util import clear
 from telethon import events
 from telethon import Button
 from telethon.tl.types import InputWebDocument
 from vcbot import *
 from vcbot.config import Config as VAR
-# from time import perf_counter, strftime
-from vcbot.youtube import download, search, playlist, redio_v
+from vcbot.youtube import fetch_stream , search, playlist #redio_v, download
 from telethon.tl.custom import InlineBuilder as Builder
-# from pytgcalls.implementation.group_call import GroupCall
 from pytube import YouTube
 from pytgcalls import GroupCallFactory
 
@@ -109,9 +105,6 @@ class Factory:
             return
         if self.is_connected:
             self.groupcall.restart_playout()
-
-
-
 
 
 
@@ -236,24 +229,16 @@ async def play(event):
     # await cmd(f"rm './downloads/*'")
     clear()
     if url:
-        try:
-            # video, audio, title = await redio_v(url)
-            audio = True
-            video, title = await download(url)
-        except TypeError as e:
-            await temp.edit(f"Failed: {e}")
+        audio = True
+        video, title, Error = await fetch_stream(url)
+        if Error:
+            await temp.edit(Error)
             return
-        except asyncio.TimeoutError:
-            await temp.edit("**TimeoutError**: Can't wait too long to download",
-            # buttons=[Button.inline("Retry", f"/play {url}")]
-            )
-            return
-        except Exception:
-            await temp.edit(traceback.format_exc())
+        if not video:
+            await event.respond("**Error**:  Can't fetch data")
             return
 
         await temp.edit("starting video+audio...")
-        
         if not video or not audio:
             await temp.edit("can't decode")
             return
