@@ -65,6 +65,8 @@ class Factory:
         if not self.groupcall:
             self.groupcall = factory.get_group_call()
             # self.first_time = False
+        if self.groupcall.is_connected:
+            await self.groupcall.stop()
         await self.groupcall.start(id)
 
 
