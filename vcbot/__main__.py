@@ -69,7 +69,7 @@ class Factory:
             return False
         if self.groupcall.is_connected:
             return True
-        
+
         return False
 
     async def start(self, id):
@@ -86,12 +86,12 @@ class Factory:
         if self.groupcall:
             # await self.start(id)
             logging.debug('started video')
-            await self.groupcall.start_video(input_)
+            await self.groupcall.start_video(input_ , repeat=False)
 
     async def start_audio(self, input_,):
         logging.debug("start audio")
         if self.is_connected:
-            await self.groupcall.start_audio(input_ ,)
+            await self.groupcall.start_audio(input_ , repeat=False)
         else:
             logging.info("failed to start audio")
 
@@ -371,12 +371,46 @@ async def etc(event):
         buttons=buttons
     
     )
-    
-        
-    
-    
-@bot.on(events.NewMessage(from_users=VAR.ADMINS, pattern=".fstream", func=lambda e: e.is_reply))
+
+@bot.on(events.NewMessage(from_users=VAR.ADMINS, pattern="^.stream\s?(.+)?"))   
 async def stream(event):
+    url = None
+    if event.is_reply:
+        message = await event.get_reply_message()
+        url = message.raw_text
+    else:
+        url = event.pattern_match.group(1)
+
+    if url:
+        temp = await event.respond("connecting..")
+        try:
+            await groupcall.start(event.chat_id)
+        except asyncio.TimeoutError:
+            await temp.edit("**Error**: Failed to connect voice call")
+        await temp.edit("Connected: Starting Video")
+        try:
+            await groupcall.start_video(url)
+        except Exception:
+            await temp.edit("Failed to start video")
+
+        await temp.edit(
+            "Playing... ",
+            buttons = [
+                [Button.inline("Next"), Button.inline("Any")],
+                [Button.inline("Resume")],
+                [Button.inline("Pause")],
+                # [Button.inline("Restart")],
+                [Button.inline("Stop")]
+            ]
+        )
+
+
+
+
+    
+    
+@bot.on(events.NewMessage(from_users=VAR.ADMINS, pattern="^.fstream", func=lambda e: e.is_reply))
+async def fstream(event):
     message = await event.get_reply_message()
     if not message.file or not message.video:
         await message.reply("No file detected")
