@@ -62,6 +62,14 @@ class Factory:
             logging.debug(f"Stopped groupcall")
             return
         
+    @property
+    async def is_connected(self):
+        if not self.groupcall:
+            return False
+        if self.groupcall.is_connected:
+            return True
+        
+        return False
 
     async def start(self, id):
         logging.debug("Requested Start")
@@ -73,7 +81,6 @@ class Factory:
         await self.groupcall.start(id)
         logging.debug("stop groupcall")
 
-
     async def start_video(self,input_):
         if self.groupcall:
             # await self.start(id)
@@ -82,10 +89,11 @@ class Factory:
 
     async def start_audio(self, input_,):
         logging.debug("start audio")
-        if self.is_connected or self.first_time_a:
+        if self.is_connected:
             await self.groupcall.start_audio(input_ ,)
         else:
-            logging.info("failed to start audio")  
+            logging.info("failed to start audio")
+            
     async def play_pause(self, play=False):
         if not self.groupcall:
             return
