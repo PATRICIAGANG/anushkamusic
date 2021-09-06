@@ -83,6 +83,8 @@ class Factory:
         else:
             logging.info("failed to start audio")  
     async def play_pause(self, play=False):
+        if not self.groupcall:
+            return
         if self.is_connected:
             if play:
                 self.groupcall.resume_playout()
@@ -90,6 +92,8 @@ class Factory:
                 self.groupcall.pause_playout()
     
     async def restart(self):
+        if not self.groupcall:
+            return
         if self.is_connected:
             self.groupcall.restart_playout()
 
@@ -181,6 +185,9 @@ async def switch(event):
         except TypeError as e:
             await temp.edit(f"Failed: {e}")
             return
+        except asyncio.TimeoutError:
+            await temp.edit("TimeoutError: Can't wait too long")
+            return
         except Exception:
             await temp.edit(traceback.format_exc())
             return
@@ -232,6 +239,9 @@ async def play(event):
             video, title = await download(url)
         except TypeError as e:
             await temp.edit(f"Failed: {e}")
+            return
+        except asyncio.TimeoutError:
+            await temp.edit("TimeoutError: Can't wait too long")
             return
         except Exception:
             await temp.edit(traceback.format_exc())
