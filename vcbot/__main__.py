@@ -350,7 +350,7 @@ async def stream(event):
     if message.file.size > 1e+6:
         await message.reply("File too big")
         return
-    async with client.action(event.chat_id, 'record-video') as action:
+    async with bot.action(event.chat_id, 'record-video') as action:
         loc = await message.download_file("./downloads", progress_callback=action.progress)
 
     try:
