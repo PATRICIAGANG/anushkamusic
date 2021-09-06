@@ -139,7 +139,16 @@ def admin(func):
 #         [Button.inline("Stop")]
 #         ]
 #     )
- 
+def notimeout(func):
+    async def runner(event, *args, **kwargs):
+        try:
+            return await func(event, *args, **kwargs)
+        except asyncio.TimeoutError:
+            return await event.respond("**TimeoutError**: failed to connect")
+        except Exception:
+            return await event.respond(traceback.format_exc())
+    return runner
+        
 @bot.on(events.NewMessage(from_users=VAR.ADMINS, pattern="/iiii"))
 async def uptime(e):
     await e.respond(f"Uptime: {perf_counter()/1e-9}")
@@ -191,7 +200,7 @@ async def switch(event):
             await temp.edit(f"Failed: {e}")
             return
         except asyncio.TimeoutError:
-            await temp.edit("TimeoutError: Can't wait too long")
+            await temp.edit("TimeoutError: Can't wait too long for download")
             return
         except Exception:
             await temp.edit(traceback.format_exc())
@@ -251,7 +260,7 @@ async def play(event):
             await temp.edit(f"Failed: {e}")
             return
         except asyncio.TimeoutError:
-            await temp.edit("TimeoutError: Can't wait too long")
+            await temp.edit("**TimeoutError**: Can't wait too long to download")
             return
         except Exception:
             await temp.edit(traceback.format_exc())
