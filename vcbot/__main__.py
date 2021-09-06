@@ -64,7 +64,7 @@ class Factory:
             return
         
     @property
-    async def is_connected(self):
+    def is_connected(self):
         if not self.groupcall:
             return False
         if self.groupcall.is_connected:
