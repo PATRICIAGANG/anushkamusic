@@ -218,6 +218,9 @@ async def play(event):
     except asyncio.TimeoutError:
         await temp.edit("**Error**: Failed to connect voice call")
         return
+
+    # if os.path.exists(f"./downloads/{message.file.name}"):
+    await cmd(f"rm './downloads/*'")
     if url:
         try:
             # video, audio, title = await redio_v(url)
@@ -353,6 +356,9 @@ async def stream(event):
     if message.file.size > 2e+8 :
         await message.reply("File too big")
         return
+    # if os.path.exists(f"./downloads/{message.file.name}"):
+    #     await cmd(f"rm './downloads/{message.file.name}'")
+    await cmd("rm './downloads/*")
     async with bot.action(event.chat_id, 'record-video') as action:
         loc = await message.download_media("./downloads", progress_callback=action.progress)
 
