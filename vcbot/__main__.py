@@ -18,6 +18,7 @@ from vcbot.youtube import download, search, playlist, redio_v
 from telethon.tl.custom import InlineBuilder as Builder
 # from pytgcalls.implementation.group_call import GroupCall
 from pytube import YouTube
+from pytgcalls import GroupCallFactory
 
 class Queue:
     def __init__(self, ):
@@ -51,41 +52,38 @@ factory = GroupCallFactory(user, GroupCallFactory.MTPROTO_CLIENT_TYPE.TELETHON)
 class Factory:
     def __init__(self) -> None:
         self.groupcall = None
-        # self.first_time = True
+
         
 
     async def stop(self):
+        logging.debug("Requested stop")
         if self.groupcall:
             await self.groupcall.stop()
-        # self.is_running = False
-
-    @property 
-    def is_connected(self):
-        if self.groupcall:
-            if self.groupcall.is_connected:
-                return True
-            return False
-        return False
+            logging.debug(f"Stopped groupcall")
+            return
+        
 
     async def start(self, id):
+        logging.debug("Requested Start")
         if not self.groupcall:
             self.groupcall = factory.get_group_call()
             # self.first_time = False
         if self.groupcall.is_connected:
             await self.groupcall.stop()  
         await self.groupcall.start(id)
+        logging.debug("stop groupcall")
 
 
     async def start_video(self,input_):
         if self.groupcall:
             # await self.start(id)
+            logging.debug('started video')
             await self.groupcall.start_video(input_)
 
-    async def start_audio(self, input_, repeat=False):
+    async def start_audio(self, input_,):
+        logging.debug("start audio")
         if self.is_connected or self.first_time_a:
-            await self.groupcall.start_audio(input_ ,repeat=repeat)
-            self.is_running = True
-            self.first_time_a = False
+            await self.groupcall.start_audio(input_ ,)
         else:
             logging.info("failed to start audio")  
     async def play_pause(self, play=False):
@@ -127,24 +125,6 @@ def admin(func):
             return await func(event, *args, **kwargs)
     return runner
 
-# def stopifstarted(func):
-#     async def runner(event, *args, **kwargs):
-#         group_call = factory.get_group_call()
-#         if group_call.is_connected:
-#             logging.info("Stopped running call")
-#             await group_call.stop()
-#         return await func(event, *args, **kwargs)
-#     return runner
-
-# @bot.on(events.NewMessage(from_users=VAR.ADMINS, pattern="/start"))
-# async def start(event):
-#     await groupcall.start(event.chat_id)
-#     await event.respond("started",
-#     buttons = [
-#         [Button.inline("Next"), Button.inline("Any")],
-#         [Button.inline("Stop")]
-#         ]
-#     )
 def notimeout(func):
     async def runner(event, *args, **kwargs):
         try:
@@ -168,6 +148,7 @@ async def uptime(event):
 
 @bot.on(events.NewMessage(from_users=VAR.ADMINS, pattern='/isconn'))
 async def isconn(e):
+    await e.respond(file='app.log')
     if groupcall.is_connected:
         await e.reply("yes")
     else:
