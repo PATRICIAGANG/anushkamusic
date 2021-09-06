@@ -60,6 +60,7 @@ class Factory:
         if self.groupcall:
             await self.groupcall.stop()
             logging.debug(f"Stopped groupcall")
+            self.groupcall = None
             return
         
     @property
@@ -93,7 +94,7 @@ class Factory:
             await self.groupcall.start_audio(input_ ,)
         else:
             logging.info("failed to start audio")
-            
+
     async def play_pause(self, play=False):
         if not self.groupcall:
             return
