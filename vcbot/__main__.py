@@ -171,7 +171,7 @@ async def isconn(e):
     if groupcall.is_connected:
         await e.reply("yes")
     else:
-        await e.resply("No")
+        await e.reply("No")
 
 # @bot.on(events.NewMessage(from_users=VAR.ADMINS, pattern='isconn'))
 # async def gitpull(e):
