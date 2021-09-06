@@ -360,7 +360,8 @@ async def etc(event):
         await groupcall.start()
         case = case + 'ed'
     elif case == 'stop':
-        await groupcall.stop()
+        if groupcall.is_connected:
+            await groupcall.stop()
         case = case + 'ped'
 
     elif case == 'resume':
