@@ -347,7 +347,7 @@ async def stream(event):
     if not message.file or not message.video:
         await message.reply("No file detected")
         return
-    if message.file.size > 1e+6:
+    if message.file.size > 2e+8 :
         await message.reply("File too big")
         return
     async with bot.action(event.chat_id, 'record-video') as action:
@@ -361,6 +361,7 @@ async def stream(event):
         return
     try:
         await groupcall.start_video(loc)
+        await message.reply("Playing...")
     except Exception:
         await message.reply(traceback.format_exc())
 
