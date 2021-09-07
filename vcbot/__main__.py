@@ -73,8 +73,9 @@ class Factory:
         if not self.groupcall:
             self.groupcall = factory.get_group_call()
             # self.first_time = False
-        if self.groupcall.is_connected:
-            await self.groupcall.stop()  
+        if self.groupcall:
+            if self.groupcall.is_connected:
+                await self.groupcall.stop()  
         await self.groupcall.start(id)
         logging.debug("stop groupcall")
 
@@ -278,9 +279,9 @@ async def search_yt(event):
     result = []
 
     async for i in result_:
-        if i['duration']:
-            if i['duration'].count(':') > 2:
-                continue
+        if not i['duration']:
+            # if i['duration'].count(':') > 2:
+            continue
         
         x = builder.article(
             title=i['title'],
