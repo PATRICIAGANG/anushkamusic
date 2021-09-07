@@ -44,7 +44,8 @@ async def fetch_stream(url: str):
     params = {"verbose": True, "format": "", "noplaylist": True, "nocontinue": True}
     # params['format'] = "best[height>=?480]/best"
     # params['format'] = "best[height<=?480]/best"
-    params['format'] = "best"
+    params['format'] = "best[height=?720]/best"
+    # params['format'] = "best"
     yt = YoutubeDL(params)# [ext=m4a]
     try:
         info = yt.extract_info(url, download=False)
