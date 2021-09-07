@@ -41,7 +41,7 @@ async def redio_v(url: str):
     return rtype[0]['url'], rtype[1]['url'], yt_.title
     
 async def fetch_stream(url: str):
-    params = {"verbose": True, "format": "best[height=?480]/best", "noplaylist": True, "nocontinue": True}
+    params = {"verbose": True, "format": "best[height>?480]/best", "noplaylist": True, "nocontinue": True}
     yt = YoutubeDL(params)# [ext=m4a]
     try:
         info = yt.extract_info(url, download=False)
@@ -52,7 +52,7 @@ async def fetch_stream(url: str):
     except (KeyError, Exception):
         try:
             yt = YouTube(url)
-            command = f'youtube-dl -f "best[height=?480]/best" "{url}" -o "./downloads/{yt.video_id}.%(ext)s" --no-continue --no-playlist --verbose'
+            command = f'youtube-dl -f "best[height>?480]/best" "{url}" -o "./downloads/{yt.video_id}.%(ext)s" --no-continue --no-playlist --verbose'
             await asyncio.wait_for(cmd(command), timeout=30)
             path = glob.glob('./downloads/'+ yt.video_id +"*")
             return path[0] if path else None, yt.title, None
