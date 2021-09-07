@@ -83,12 +83,12 @@ class Factory:
         if self.groupcall:
             # await self.start(id)
             logging.debug('started video')
-            await self.groupcall.start_video(input_ , repeat=False)
+            await self.groupcall.start_video(input_ , repeat=True)
 
     async def start_audio(self, input_,):
         logging.debug("start audio")
         if self.is_connected:
-            await self.groupcall.start_audio(input_ , repeat=False)
+            await self.groupcall.start_audio(input_ , repeat=True)
         else:
             logging.info("failed to start audio")
 
