@@ -372,11 +372,13 @@ async def stream(event):
             await groupcall.start(event.chat_id)
         except asyncio.TimeoutError:
             await temp.edit("**Error**: Failed to connect voice call")
+            return
         await temp.edit("Connected: Starting Video")
         try:
             await groupcall.start_video(url)
         except Exception:
             await temp.edit("Failed to start video")
+            return
 
         await temp.edit(
             "Playing... ",
