@@ -1,6 +1,6 @@
 import traceback
 import asyncio
-from vcbot.config import Config as VAR
+from config import Config as VAR
 def admin(func):
     async def runner(event, *args, **kargs):
         if hasattr(event, 'data'):
