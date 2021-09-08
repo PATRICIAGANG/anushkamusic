@@ -11,23 +11,58 @@ import re, glob
 # from pprint import pp
 from youtube_dl import YoutubeDL
 from youtube_dl.utils import ExtractorError
+from asyncio import AbstractEventLoop
 
 
-async def cmd_dl(yt, url):
-    url_ = yt.video_id
-    url = "https://www.youtube.com/watch?v=" + url_
-    logging.info("starting yt-dl")
-    x = await asyncio.wait_for(cmd(f'youtube-dl -f "best[height<=480]" "{url}" -o "./downloads/{url_}.%(ext)s" --no-continue'), timeout=30) #
-    if not x:
-        return
-    logging.info("stopped yt-dl")
-    return glob.glob('./downloads/'+ url_+"*")[0]
 
-async def download(url):
-    if not url:
-        return
-    yt = YouTube(url)
-    return await cmd_dl(yt, url), yt.title
+async def download_cmd_ytdl(url: str, format: str):
+    try:
+        id_ = secrets.token_hex(20)
+        try:
+            title = await cmd(f'youtube-dl -e "{url}"')
+        except ErrorInAsyncCmd:
+            title = "unknown"
+        command = f'youtube-dl -f "{format}" "{url}" -o "./downloads/{id_}.%(ext)s" --no-continue --no-playlist --verbose'
+        await asyncio.wait_for(cmd(command), timeout=30)
+        path = glob.glob(f'./downloads/{id_}*')
+        return path[0] if path else None, title, None
+
+    except asyncio.TimeoutError:
+            return None, None, "TimeoutError: Can't wait too long for download"
+    except ErrorInAsyncCmd as e:
+        return None, None, str(e)
+    except Exception as e:
+        return None, None, str(e)
+
+async def download_ytdl(url: str, format: str = "best", loop: AbstractEventLoop = asyncio.get_event_loop()):
+    id_ = secrets.token_hex(20)
+    params= {"verbose": True, "format": format, "noplaylist": True, "continue_dl": False, 'outtmpl': "hello.%(ext)s"}
+    yt = YoutubeDL(params)
+    try:
+        info = await loop.run_in_executor(None, lambda : yt.extract_info(url))
+        return f"./downloads/{id_}.{info['ext']}", info['title'], None
+    except ExtractorError as e:
+        return None, None, str(e)
+    except Exception as e:
+        return None, None, str(e)
+    
+    
+async def fetch_ytdl(url: str, format: str = "best", loop: AbstractEventLoop = asyncio.get_event_loop()):
+    params= {"verbose": True, "format": format, "noplaylist": True, "continue_dl": False}
+    try:
+        yt = YoutubeDL(params)
+        info = await loop.run_in_executor(None, lambda : yt.extract_info(url))
+        # info["display_id"]
+        return info['url'], info['title'], None
+    except ExtractorError:
+        return None, None, "ExtractorError: Invalid url"
+    except Exception as e:
+        return None, None, str(e)
+
+    
+
+
+    
 
 async def redio_v(url: str):
     """
@@ -52,30 +87,11 @@ async def fetch_stream(url: str, only_audio=False):
     else:
         params['format'] = "bestaudio"
 
-    yt = YoutubeDL(params)# [ext=m4a]
-    try:
-        info = yt.extract_info(url, download=False)
-        info["display_id"]
-        return info['url'], info['title'], None
-    except ExtractorError:
-        return None, None, "ExtractorError: Invalid url"
-    except (KeyError, Exception):
-        try:
-            try:
-                title = await cmd(f'youtube-dl -e "{url}"')
-            except ErrorInAsyncCmd:
-                title = "unknown"
-            id_ = secrets.token_hex(20)
-            command = f'youtube-dl -f "{params["format"]}" "{url}" -o "./downloads/{id_}.%(ext)s" --no-continue --no-playlist --verbose'
-            await asyncio.wait_for(cmd(command), timeout=30)
-            path = glob.glob(f'./downloads/{id_}*')
-            return path[0] if path else None, title, None
-        except asyncio.TimeoutError:
-            return None, None, "TimeoutError: Can't wait too long for download"
-        except ErrorInAsyncCmd as e:
-            return None, None, str(e)
-        except Exception as e:
-            return None, None, str(e)
+    return await fetch_ytdl(url, params['format'])
+            
+            
+            
+        
 
 
         

@@ -300,6 +300,10 @@ async def stream(event):
 
 
 
+# @bot.on(events.NewMessage(from_users=VAR.ADMINS, pattern="^.stream\s?(.+)?"))   
+# async def streamX(event):
+#     if groupcall.groupcall:
+#         groupcall.groupcall.add_handler()
 
     
     
