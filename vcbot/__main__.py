@@ -79,18 +79,18 @@ class Factory:
         await self.groupcall.start(id)
         logging.debug("stop groupcall")
 
-    async def start_video(self,input_):
+    async def start_video(self, source: str, with_audio=True, repeat=False, enable_experimental_lip_sync=False):
         if self.groupcall:
             # await self.start(id)
             logging.debug('started video')
-            await self.groupcall.start_video(input_ , repeat=True, enable_experimental_lip_sync=True)
+            await self.groupcall.start_video(source , with_audio, repeat, enable_experimental_lip_sync)
 
-    async def start_audio(self, input_,):
+    async def start_audio(self, source: str, repeat=True):
         logging.debug("start audio")
-        if self.is_connected:
-            await self.groupcall.start_audio(input_ , repeat=True)
-        else:
-            logging.info("failed to start audio")
+        if not self.groupcall:
+            return
+        await self.groupcall.start_audio(source, repeat)
+        
 
     async def play_pause(self, play=False):
         if not self.groupcall:
@@ -113,19 +113,19 @@ groupcall = Factory()
 
 
 def admin(func):
-    async def runner(event, *args, **kwargs):
+    async def runner(event):
         if hasattr(event, 'data'):
             try:
 
                 sender = await event.get_sender()
                 if sender.id in VAR.ADMINS:
-                    return await func(event, *args, **kwargs)
+                    return await func(event)
                 else:
                     pass
             except (ValueError, TypeError):
                 await event.answer("NoneType: Retry")
         else:
-            return await func(event, *args, **kwargs)
+            return await func(event)
     return runner
 
 def notimeout(func):
@@ -201,10 +201,9 @@ async def switch(event):
     else:
         await temp.edit("Empty queue")
  
-@bot.on(events.CallbackQuery(pattern="/play (.+)"))
-@bot.on(events.NewMessage(from_users=VAR.ADMINS, pattern="/play (.+)"))
+
 @admin
-async def play(event):
+async def play(event, only_audio: bool =False, beta: bool=False):
 
     temp = await event.respond("Starting...")
     if hasattr(event, 'data'):
@@ -230,24 +229,27 @@ async def play(event):
     # await cmd(f"rm './downloads/*'")
     clear()
     if url:
-        audio = True
-        video, title, Error = await fetch_stream(url)
+        # audio = True
+        video_audio, title, Error = await fetch_stream(url, only_audio)
         if Error:
             await temp.edit(Error)
             return
-        if not video:
+        if not video_audio:
             await event.respond("**Error**:  Can't fetch data")
             return
 
         await temp.edit("starting video+audio...")
-        if not video or not audio:
+        if not video_audio:
             await temp.edit("can't decode")
             return
         else:
             try:
                 # await groupcall.start_audio(audio)
                 # await groupcall.start_video(video, with_audio=False)
-                await groupcall.start_video(video)
+                if not only_audio:
+                    await groupcall.start_video(video_audio, enable_experimental_lip_sync=beta)
+                else:
+                    await groupcall.start_audio(video_audio)
             except RuntimeError as e:
                 await temp.edit(f"{e}")
                 return
@@ -264,6 +266,20 @@ async def play(event):
     else:
         await temp.edit("Empty queue")
  
+@bot.on(events.CallbackQuery(pattern="/play (.+)"))
+@bot.on(events.NewMessage(from_users=VAR.ADMINS, pattern=".play (.+)"))
+async def play_video(event):
+    await play(event)
+
+@bot.on(events.CallbackQuery(pattern="/aplay (.+)"))
+@bot.on(events.NewMessage(from_users=VAR.ADMINS, pattern=".aplay (.+)"))
+async def play_audio(event):
+    await play(event, only_audio=True)
+
+@bot.on(events.CallbackQuery(pattern="/bplay (.+)"))
+@bot.on(events.NewMessage(from_users=VAR.ADMINS, pattern="/bplay (.+)"))
+async def play_beta(event):
+    await play(event, beta=True)
 
 @bot.on(events.NewMessage(from_users=VAR.ADMINS, pattern="/add (.+)"))
 async def add_q(event):
