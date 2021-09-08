@@ -37,7 +37,7 @@ python -m vcbot
  </a>
  
 # Requirements:
-- [Python3](https://www.python.org/downloads)
+- [Python3.8+](https://www.python.org/downloads)
 - [requirements.txt](https://github.com/animeshxd/vcbot/blob/master/requirements.txt)
 - 2GB RAM VPS (Windows/Linux/Mac)
 
