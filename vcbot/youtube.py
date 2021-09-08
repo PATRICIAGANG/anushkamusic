@@ -51,7 +51,7 @@ async def fetch_ytdl(url: str, format: str = "best", loop: AbstractEventLoop = a
     params= {"verbose": True, "format": format, "noplaylist": True, "continue_dl": False}
     try:
         yt = YoutubeDL(params)
-        info = await loop.run_in_executor(None, lambda : yt.extract_info(url))
+        info = await loop.run_in_executor(None, lambda : yt.extract_info(url, download=False))
         # info["display_id"]
         return info['url'], info['title'], None
     except ExtractorError:
