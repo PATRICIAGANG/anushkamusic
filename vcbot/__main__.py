@@ -9,7 +9,7 @@ from telethon import events
 from telethon import Button
 from telethon.tl.types import InputWebDocument
 from vcbot import *
-from vcbot.config import Config as VAR
+from config import Config as VAR
 from vcbot.youtube import fetch_stream , search, playlist #redio_v, download
 from telethon.tl.custom import InlineBuilder as Builder
 from pytube import YouTube
