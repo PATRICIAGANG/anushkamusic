@@ -47,7 +47,7 @@ async def fetch_stream(url: str, only_audio=False):
         # params['format'] = "best[height>=?480]/best"
         # params['format'] = "best[height<=?480]/best"
         # params['format'] = "best[height=?720]/best"
-        params['format'] = "best[height=?480]/best[height=?720]/best"
+        params['format'] = "best[height=?720]/best[height=?480]/best"
         # params['format'] = "best"
     else:
         params['format'] = "bestaudio"
