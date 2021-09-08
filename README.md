@@ -1,6 +1,7 @@
 # Vcbot which does nothing
 **A bot which can play video and audio**
 
+[![PyPI - Version](https://img.shields.io/badge/Python-FFD43B?style=for-the-badge&logo=python&logoColor=darkgreen)](https://www.python.org/downloads)
 ## Configuration  
 ```bash
 git clone https://github.com/animeshxd/vcbot.git
