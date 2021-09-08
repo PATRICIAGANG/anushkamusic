@@ -29,7 +29,8 @@ python -m vcbot
  - `.resume` - Resume paused video
  - `.pause` - Pause running video
  - `.stop` - Stop running video
-
+## Run With Google Colaboratory  
+ <a href="https://colab.research.google.com/github/animeshxd/vcbot/blob/master/self_hosted.ipynb" target="_parent"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/></a>
 # Requirements:
 - [Python3](https://www.python.org/downloads)
 - [requirements.txt](https://github.com/animeshxd/vcbot/blob/master/requirements.txt)
