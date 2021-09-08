@@ -144,7 +144,7 @@ async def play(event, only_audio: bool =False, beta: bool=False):
                 await temp.edit(f"{e}")
                 return
             mess_ = f"**Currently Playing**: [{title}]({url}) " + ("(video only)" if not only_audio else "(audio only)")
-            await temp.edit(,
+            await temp.edit(mess_,
             buttons = [
                 [Button.inline("Next"), Button.inline("Any")],
                 [Button.inline("Resume")],
