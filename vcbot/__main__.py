@@ -2,8 +2,7 @@
 import asyncio
 
 import traceback
-import logging
-import random
+from vcbot.classes import Factory, Queue
 
 from vcbot.util import clear
 from telethon import events
@@ -15,128 +14,17 @@ from vcbot.youtube import fetch_stream , search, playlist #redio_v, download
 from telethon.tl.custom import InlineBuilder as Builder
 from pytube import YouTube
 from pytgcalls import GroupCallFactory
-
-class Queue:
-    def __init__(self, ):
-        self.data = ["https://music.youtube.com/watch?v=KjBYB_zFYUc&list=RDAMVMKjBYB_zFYUc"]
- 
-    def get(self):
-        if self.data:
-            return self.data.pop(0)
-        else:
-            return
- 
-    def add(self, data):
-        self.data.append(data)
-        return len(self.data)
-    
-    def any(self):
-        if self.data:
-            any_ = random.choice(self.data)
-            _ = self.data.index(any_)
-            return self.data.pop(_)
-
-        else:
-            return
+from vcbot.decorators import admin
 
 
-generator = Queue()
  
 
 factory = GroupCallFactory(user, GroupCallFactory.MTPROTO_CLIENT_TYPE.TELETHON)
-
-class Factory:
-    def __init__(self) -> None:
-        self.groupcall = None
-
-        
-
-    async def stop(self):
-        logging.debug("Requested stop")
-        if self.groupcall:
-            await self.groupcall.stop()
-            logging.debug(f"Stopped groupcall")
-            self.groupcall = None
-            return
-        
-    @property
-    def is_connected(self):
-        if not self.groupcall:
-            return False
-        if self.groupcall.is_connected:
-            return True
-
-        return False
-
-    async def start(self, id):
-        logging.debug("Requested Start")
-        if not self.groupcall:
-            self.groupcall = factory.get_group_call()
-            # self.first_time = False
-        if self.groupcall:
-            if self.groupcall.is_connected:
-                await self.groupcall.stop()  
-        await self.groupcall.start(id)
-        logging.debug("stop groupcall")
-
-    async def start_video(self, source: str, with_audio=True, repeat=False, enable_experimental_lip_sync=False):
-        if self.groupcall:
-            # await self.start(id)
-            logging.debug('started video')
-            await self.groupcall.start_video(source , with_audio, repeat, enable_experimental_lip_sync)
-
-    async def start_audio(self, source: str, repeat=True):
-        logging.debug("start audio")
-        if not self.groupcall:
-            return
-        await self.groupcall.start_audio(source, repeat)
-        
-
-    async def play_pause(self, play=False):
-        if not self.groupcall:
-            return
-        if self.is_connected:
-            if play:
-                self.groupcall.resume_playout()
-            else:
-                self.groupcall.pause_playout()
-    
-    async def restart(self):
-        if not self.groupcall:
-            return
-        if self.is_connected:
-            self.groupcall.restart_playout()
+generator = Queue()
+groupcall = Factory(factory)
 
 
 
-groupcall = Factory()
-
-
-def admin(func):
-    async def runner(event, *args, **kargs):
-        if hasattr(event, 'data'):
-            try:
-
-                sender = await event.get_sender()
-                if sender.id in VAR.ADMINS:
-                    return await func(event, *args, **kargs)
-                else:
-                    pass
-            except (ValueError, TypeError):
-                await event.answer("NoneType: Retry")
-        else:
-            return await func(event, *args, **kargs)
-    return runner
-
-def notimeout(func):
-    async def runner(event, *args, **kwargs):
-        try:
-            return await func(event, *args, **kwargs)
-        except asyncio.TimeoutError:
-            return await event.respond("**TimeoutError**: failed to connect")
-        except Exception:
-            return await event.respond(traceback.format_exc())
-    return runner
         
 @bot.on(events.NewMessage(from_users=VAR.ADMINS, pattern="/uptime"))
 async def uptime(event):
