@@ -20,7 +20,9 @@ python -m vcbot
  - `.join` - start/join Vc
  - `/next` - Get Next Video from List
  - `/any` - Get Any Video From List
- - `/play <youtube_url>` - Play from youtube url
+ - `/play <youtube_url>` - Play from youtube url (audio + video)
+ - `/aplay <youtube_url>` - Play from youtube url (audio only)
+ - `/bplay <youtube_url>` - Play from youtube url (beta: audio + video sync)
  - `.fstream` - Play from replied video, gif, image
  - `/add <youtube_url>` - Add video in List
  - `/addlist <youtube_playlist>` - Add Playlist video in List
