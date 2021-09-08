@@ -127,8 +127,8 @@ async def play(event, only_audio: bool =False, beta: bool=False):
         if not video_audio:
             await event.respond("**Error**:  Can't fetch data")
             return
-
-        await temp.edit("starting video+audio...")
+        mess_ = "starting video+audio..." if not only_audio else "starting audio only.."
+        await temp.edit(mess_)
         if not video_audio:
             await temp.edit("can't decode")
             return
@@ -143,8 +143,8 @@ async def play(event, only_audio: bool =False, beta: bool=False):
             except RuntimeError as e:
                 await temp.edit(f"{e}")
                 return
-
-            await temp.edit(f"**Currently Playing**: [{title}]({url})",
+            mess_ = f"**Currently Playing**: [{title}]({url}) " + ("(video only)" if not only_audio else "(audio only)")
+            await temp.edit(,
             buttons = [
                 [Button.inline("Next"), Button.inline("Any")],
                 [Button.inline("Resume")],
