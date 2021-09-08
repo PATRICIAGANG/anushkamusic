@@ -1,6 +1,7 @@
 import asyncio
 import logging
-
+class ErrorInAsyncCmd(Exception):
+    pass
 async def cmd(cmd):
     logging.debug([cmd])
     proc = await asyncio.create_subprocess_shell(
@@ -20,4 +21,4 @@ async def cmd(cmd):
         return stdout.decode()
     if stderr:
         logging.error(f'[stderr]\n{stderr.decode()}')
-        return False
+        raise ErrorInAsyncCmd(stderr.decode())
