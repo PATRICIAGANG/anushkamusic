@@ -194,7 +194,12 @@ async def search_yt(event):
             description=i['duration'] if i['duration'] else i['title'],
             text='/add '+ i['link'],
             thumb=InputWebDocument(i['thumbnails'][0]['url'], 0, mime_type='image/jpeg', attributes=[]),
-            buttons=Button.inline('Play Now', '/play ' + i['id']),
+            buttons=[
+                [Button.inline('Play (Audio + Video)', '/play ' + i['id'])],
+                [Button.inline('Play (Audio Only', '/aplay ' + i['id'])],
+                [Button.inline('Play (Audio + Video) Beta Sync', '/bplay ' + i['id'])],
+            ]
+            
             # link_preview=False
             )
         result.append(x)
