@@ -28,12 +28,11 @@ class Factory:
 
     async def start(self, id):
         logging.debug("Requested Start")
+        await self.stop()
         if not self.groupcall:
             self.groupcall = self.factory.get_group_call()
             # self.first_time = False
-        if self.groupcall:
-            if self.groupcall.is_connected:
-                await self.groupcall.stop()  
+ 
         await self.groupcall.start(id)
         logging.debug("stop groupcall")
 
