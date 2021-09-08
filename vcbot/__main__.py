@@ -113,19 +113,19 @@ groupcall = Factory()
 
 
 def admin(func):
-    async def runner(event):
+    async def runner(event, *args, **kargs):
         if hasattr(event, 'data'):
             try:
 
                 sender = await event.get_sender()
                 if sender.id in VAR.ADMINS:
-                    return await func(event)
+                    return await func(event, *args, **kargs)
                 else:
                     pass
             except (ValueError, TypeError):
                 await event.answer("NoneType: Retry")
         else:
-            return await func(event)
+            return await func(event, *args, **kargs)
     return runner
 
 def notimeout(func):
