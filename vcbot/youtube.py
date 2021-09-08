@@ -1,9 +1,10 @@
 import asyncio
 import logging
+import secrets
 try:
-    from vcbot.asynccmd import cmd
+    from vcbot.asynccmd import cmd, ErrorInAsyncCmd
 except ImportError:
-    from asynccmd import cmd
+    from asynccmd import cmd, ErrorInAsyncCmd
 from pytube import YouTube
 from youtubesearchpython.__future__ import VideosSearch, Playlist
 import re, glob
@@ -40,12 +41,17 @@ async def redio_v(url: str):
     rtype = x['requested_formats']
     return rtype[0]['url'], rtype[1]['url'], yt_.title
     
-async def fetch_stream(url: str):
+async def fetch_stream(url: str, only_audio=False):
     params = {"verbose": True, "format": "", "noplaylist": True, "nocontinue": True}
-    # params['format'] = "best[height>=?480]/best"
-    # params['format'] = "best[height<=?480]/best"
-    params['format'] = "best[height=?720]/best"
-    # params['format'] = "best"
+    if not only_audio:
+        # params['format'] = "best[height>=?480]/best"
+        # params['format'] = "best[height<=?480]/best"
+        # params['format'] = "best[height=?720]/best"
+        params['format'] = "best[height=?480]/best[height=?720]/best"
+        # params['format'] = "best"
+    else:
+        params['format'] = "bestaudio"
+
     yt = YoutubeDL(params)# [ext=m4a]
     try:
         info = yt.extract_info(url, download=False)
@@ -55,13 +61,19 @@ async def fetch_stream(url: str):
         return None, None, "ExtractorError: Invalid url"
     except (KeyError, Exception):
         try:
-            yt = YouTube(url)
-            command = f'youtube-dl -f "{params["format"]}" "{url}" -o "./downloads/{yt.video_id}.%(ext)s" --no-continue --no-playlist --verbose'
+            try:
+                title = await cmd(f'youtube-dl -e "{url}"')
+            except ErrorInAsyncCmd:
+                title = "unknown"
+            id_ = secrets.token_hex(20)
+            command = f'youtube-dl -f "{params["format"]}" "{url}" -o "./downloads/{id_}.%(ext)s" --no-continue --no-playlist --verbose'
             await asyncio.wait_for(cmd(command), timeout=30)
-            path = glob.glob('./downloads/'+ yt.video_id +"*")
-            return path[0] if path else None, yt.title, None
+            path = glob.glob(f'./downloads/{id_}*')
+            return path[0] if path else None, title, None
         except asyncio.TimeoutError:
             return None, None, "TimeoutError: Can't wait too long for download"
+        except ErrorInAsyncCmd as e:
+            return None, None, str(e)
         except Exception as e:
             return None, None, str(e)
 
