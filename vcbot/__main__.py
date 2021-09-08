@@ -78,7 +78,9 @@ async def switch(event):
         yt = YouTube(url)
         await temp.edit(f"**Name**: [{yt.title}]({yt.watch_url})",
             buttons = [
-                [Button.inline("Play", '/play ' + yt.video_id)],
+                [Button.inline("Play Video", '/play ' + yt.video_id)],
+                [Button.inline("Play Audio", '/aplay ' + yt.video_id)],
+                [Button.inline("Play Sync Video+Audio (Beta)", '/bplay ' + yt.video_id)],
                 [Button.inline("Next"), Button.inline("Any")],
                 [Button.inline("Resume")],
                 [Button.inline("Pause")],
@@ -155,21 +157,21 @@ async def play(event, only_audio: bool =False, beta: bool=False):
         await temp.edit("Empty queue")
  
 @bot.on(events.CallbackQuery(pattern="/play (.+)"))
-@bot.on(events.NewMessage(from_users=VAR.ADMINS, pattern=".play (.+)"))
+@bot.on(events.NewMessage(from_users=VAR.ADMINS, pattern="^.play (.+)"))
 async def play_video(event):
     await play(event)
 
 @bot.on(events.CallbackQuery(pattern="/aplay (.+)"))
-@bot.on(events.NewMessage(from_users=VAR.ADMINS, pattern=".aplay (.+)"))
+@bot.on(events.NewMessage(from_users=VAR.ADMINS, pattern="^.aplay (.+)"))
 async def play_audio(event):
     await play(event, only_audio=True)
 
 @bot.on(events.CallbackQuery(pattern="/bplay (.+)"))
-@bot.on(events.NewMessage(from_users=VAR.ADMINS, pattern="/bplay (.+)"))
+@bot.on(events.NewMessage(from_users=VAR.ADMINS, pattern="^.bplay (.+)"))
 async def play_beta(event):
     await play(event, beta=True)
 
-@bot.on(events.NewMessage(from_users=VAR.ADMINS, pattern="/add (.+)"))
+@bot.on(events.NewMessage(from_users=VAR.ADMINS, pattern="^.add (.+)"))
 async def add_q(event):
     total = generator.add(event.pattern_match.group(1))
     await event.reply(f"Added: Total: {total}")
@@ -201,7 +203,7 @@ async def search_yt(event):
     else:
         return
 
-@bot.on(events.NewMessage(from_users=VAR.ADMINS, pattern="/addlist (.+)"))
+@bot.on(events.NewMessage(from_users=VAR.ADMINS, pattern="^.addlist (.+)"))
 async def add_lst(event):
     url =  event.pattern_match.group(1)
     if not url:
